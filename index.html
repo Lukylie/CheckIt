@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CheckIt – Student Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="landing">
+        <div class="landing-card">
+            <span class="landing-icon">✅</span>
+            <h1 class="landing-title">Check<span>It</span></h1>
+            <p class="landing-sub">Best student task manager. Priorities, countdowns, calendar
+                and collaboration — all in one place.</p>
+            <div class="landing-feats">
+                <div class="feat">📌 Pinned tasks</div>
+                <div class="feat">⏰ Countdown timers</div>
+                <div class="feat">📅 Calendar view</div>
+                <div class="feat">👥 Collaborate</div>
+                <div class="feat">🌙 Dark mode</div>
+                <div class="feat">🌸 Pink mode</div>
+            </div>
+            <div class="landing-btns">
+                <a href="{{ url_for('login') }}" class="btn btn-accent">🔑 Log In</a>
+                <a href="{{ url_for('register') }}" class="btn btn-pink">✨ Sign Up Free</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

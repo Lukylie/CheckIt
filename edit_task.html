@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Edit Task – CheckIt{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-title">✏️ Edit Task</div>
+        <div class="form-sub">Update your task details</div>
+        <form method="POST">
+            <div class="field">
+                <label>📝 Title *</label>
+                <input type="text" name="title" value="{{ task.title }}" required>
+            </div>
+            <div class="field">
+                <label>📄 Description</label>
+                <textarea name="description">{{ task.description }}</textarea>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>📚 Category</label>
+                    <select name="category">
+                        {% for cat in ['General','Mathematics','Computer
+                        Science','Engineering','Physics','Chemistry','Biology','Literature','Personal'] %}
+                        <option {{ 'selected' if task.category==cat }}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>🎯 Priority</label>
+                    <select name="priority">
+                        {% for p in ['High','Medium','Low'] %}
+                        <option {{ 'selected' if task.priority==p }}>{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>📅 Due Date</label>
+                    <input type="date" name="due_date" value="{{ task.due_date }}">
+                </div>
+                <div class="field">
+                    <label>🔄 Status</label>
+                    <select name="status">
+                        <option {{ 'selected' if task.status=='Pending' }}>Pending</option>
+                        <option {{ 'selected' if task.status=='Done' }}>Done</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="checkbox-field">
+                    <input type="checkbox" name="pinned" id="pinned" {{ 'checked' if task.pinned }}>
+                    <label for="pinned">📌 Pin this task to the top</label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button type="submit" class="btn btn-accent">Update Task ✅</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

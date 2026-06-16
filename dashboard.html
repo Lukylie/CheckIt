@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – CheckIt{% endblock %}
+{% block content %}
+<div class="page">
+    <div class="stats-row">
+        <div class="stat-card">
+            <span class="stat-icon">📋</span>
+            <div class="stat-num">{{ total }}</div>
+            <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">⏳</span>
+            <div class="stat-num">{{ pending }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">✅</span>
+            <div class="stat-num">{{ done }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <div class="section-hdr">
+        <div class="section-title">📝 My Tasks</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="filter-tabs">
+                <a href="?filter=all" class="ftab {% if filter_=='all'     %}active{% endif %}">All</a>
+                <a href="?filter=pinned" class="ftab {% if filter_=='pinned'  %}active{% endif %}">📌 Pinned</a>
+                <a href="?filter=pending" class="ftab {% if filter_=='pending' %}active{% endif %}">Pending</a>
+                <a href="?filter=done" class="ftab {% if filter_=='done'    %}active{% endif %}">Done</a>
+            </div>
+            <a href="{{ url_for('add_task') }}" class="btn btn-accent">＋ New Task</a>
+        </div>
+    </div>
+
+    {% if tasks %}
+    <div class="task-grid">
+        {% for task in tasks %}
+        {% set dl = days_left(task.due_date) %}
+        <div
+            class="task-card p-{{ task.priority|lower }} {% if task.status=='Done' %}done-card{% endif %} {% if task.pinned %}pinned{% endif %}">
+            <a href="{{ url_for('toggle_task', task_id=task.id) }}"
+                class="task-cb {% if task.status=='Done' %}done{% endif %}">
+                {% if task.status=='Done' %}✓{% endif %}
+            </a>
+            <div class="task-body">
+                <div class="task-title {% if task.status=='Done' %}done{% endif %}">
+                    {% if task.pinned %}<span class="pin-star">📌</span>{% endif %}
+                    {{ task.title }}
+                </div>
+                <div class="task-meta">
+                    <span class="tag">{{ task.category }}</span>
+                    <span class="priority-badge p-{{ task.priority|lower }}-badge">{{ task.priority }}</span>
+                    {% if task.due_date and dl is not none %}
+                    {% if dl < 0 %} <span class="countdown cd-overdue">⚠️ {{ dl|abs }} day{% if dl|abs != 1 %}s{% endif
+                        %} overdue</span>
+                        {% elif dl == 0 %}
+                        <span class="countdown cd-today">🔥 Due today!</span>
+                        {% elif dl <= 3 %} <span class="countdown cd-soon">⏰ {{ dl }} day{% if dl != 1 %}s{% endif %}
+                            left</span>
+                            {% else %}
+                            <span class="countdown cd-normal">📅 {{ task.due_date }}</span>
+                            {% endif %}
+                            {% endif %}
+                </div>
+                {% if task.description %}
+                <div class="task-desc">{{ task.description }}</div>
+                {% endif %}
+            </div>
+            <div class="task-actions">
+                <a href="{{ url_for('pin_task',    task_id=task.id) }}"
+                    class="act-btn {% if task.pinned %}pin-active{% endif %}">📌</a>
+                <a href="{{ url_for('edit_task',   task_id=task.id) }}" class="act-btn">✏️</a>
+                <a href="{{ url_for('collab',      task_id=task.id) }}" class="act-btn">👥</a>
+                <a href="{{ url_for('delete_task', task_id=task.id) }}" class="act-btn del"
+                    onclick="return confirm('Delete this task?')">🗑️</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        <span class="empty-icon">📭</span>
+        <div class="empty-text">No tasks here yet.</div>
+        <a href="{{ url_for('add_task') }}" class="btn btn-accent">＋ Add your first task</a>
+    </div>
+    {% endif %}
+
+    <div class="section-hdr" style="margin-top:36px">
+        <div class="section-title">📬 Shared with me</div>
+    </div>
+    {% if shared %}
+    {% for item in shared %}
+    {% set dl = days_left(item.task.due_date) %}
+    <div class="shared-card">
+        <div class="task-body">
+            <div class="task-title">{{ item.task.title }}</div>
+            <div class="task-meta">
+                <span class="tag">{{ item.task.category }}</span>
+                <span class="priority-badge p-{{ item.task.priority|lower }}-badge">{{ item.task.priority }}</span>
+                {% if item.task.due_date and dl is not none %}
+                {% if dl < 0 %} <span class="countdown cd-overdue">⚠️ {{ dl|abs }}d overdue</span>
+                    {% elif dl == 0 %}
+                    <span class="countdown cd-today">🔥 Today!</span>
+                    {% else %}
+                    <span class="countdown cd-normal">📅 {{ item.task.due_date }}</span>
+                    {% endif %}
+                    {% endif %}
+            </div>
+            <div class="shared-from">👤 From: {{ item.owner.name }}</div>
+        </div>
+        <span class="priority-badge p-{{ 'low' if item.task.status=='Done' else 'medium' }}-badge">{{ item.task.status
+            }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p style="color:var(--text3);font-size:13px;font-weight:500">💌 Nobody has shared a task with you yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

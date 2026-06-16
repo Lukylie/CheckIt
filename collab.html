@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Share Task – CheckIt{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-title">👥 Share Task</div>
+        <div class="form-sub">📌 "{{ task.title }}"</div>
+        {% if users %}
+        <form method="POST">
+            <div class="field">
+                <label>🎓 Pick a classmate</label>
+                <select name="buddy_id">
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.name }} — {{ user.email }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-accent">👥 Add Collaborator</button>
+        </form>
+        {% else %}
+        <p style="color:var(--text3);font-size:13px;margin-top:8px">😕 No other users registered yet.</p>
+        {% endif %}
+        <div style="margin-top:28px">
+            <div class="section-title" style="font-size:15px;margin-bottom:12px">🤝 Current collaborators</div>
+            {% if buddies %}
+            <div class="buddy-list">
+                {% for buddy in buddies %}
+                <div class="buddy-card">
+                    <div class="buddy-info">
+                        <div class="buddy-av">{{ buddy.name[0].upper() }}</div>
+                        <div>
+                            <div class="buddy-name">{{ buddy.name }}</div>
+                            <div class="buddy-email">{{ buddy.email }}</div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('remove_collab', task_id=task.id, buddy_id=buddy.id) }}"
+                        class="btn btn-danger btn-sm" onclick="return confirm('Remove {{ buddy.name }}?')">Remove</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--text3);font-size:13px">No collaborators added yet.</p>
+            {% endif %}
+        </div>
+        <div style="margin-top:24px">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

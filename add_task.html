@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Add Task – CheckIt{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-title">✨ New Task</div>
+        <div class="form-sub">What do you need to get done?</div>
+        <form method="POST">
+            <div class="field">
+                <label>📝 Title *</label>
+                <input type="text" name="title" placeholder="e.g. Submit Maths assignment" required autofocus>
+            </div>
+            <div class="field">
+                <label>📄 Description</label>
+                <textarea name="description" placeholder="Optional notes…"></textarea>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>📚 Category</label>
+                    <select name="category">
+                        <option>General</option>
+                        <option>Mathematics</option>
+                        <option>Computer Science</option>
+                        <option>Engineering</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>Biology</option>
+                        <option>Literature</option>
+                        <option>Personal</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>🎯 Priority</label>
+                    <select name="priority">
+                        <option value="High">🔴 High</option>
+                        <option value="Medium" selected>🟡 Medium</option>
+                        <option value="Low">🟢 Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>📅 Due Date</label>
+                <input type="date" name="due_date">
+            </div>
+            <div class="field">
+                <div class="checkbox-field">
+                    <input type="checkbox" name="pinned" id="pinned">
+                    <label for="pinned">📌 Pin this task to the top</label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button type="submit" class="btn btn-accent">Save Task ✅</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

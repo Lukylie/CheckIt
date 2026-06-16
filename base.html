@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ session.get('theme', 'dark') }}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}CheckIt{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    {% if session.get('user_id') %}
+    <header>
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">✅</div>
+                CheckIt
+            </div>
+            <nav class="nav-links">
+                <a href="{{ url_for('dashboard') }}"
+                    class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="{{ url_for('calendar') }}"
+                    class="nav-link {% if request.endpoint == 'calendar'  %}active{% endif %}">Calendar</a>
+                <a href="{{ url_for('add_task') }}"
+                    class="nav-link {% if request.endpoint == 'add_task'  %}active{% endif %}">+ Add Task</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="theme-switcher">
+                <a href="{{ url_for('set_theme', theme_name='dark') }}"
+                    class="theme-btn {% if session.get('theme','dark')=='dark'  %}active{% endif %}">🌙</a>
+                <a href="{{ url_for('set_theme', theme_name='pink') }}"
+                    class="theme-btn {% if session.get('theme','dark')=='pink'  %}active{% endif %}">🌸</a>
+                <a href="{{ url_for('set_theme', theme_name='light') }}"
+                    class="theme-btn {% if session.get('theme','dark')=='light' %}active{% endif %}">☀️</a>
+            </div>
+            <div class="user-chip">
+                <div class="user-avatar">{{ session['user_name'][0].upper() }}</div>
+                {{ session['user_name'].split()[0] }}
+                <a href="{{ url_for('logout') }}" class="logout-link">Sign out</a>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div style="max-width:1060px;margin:12px auto 0;padding:0 20px">
+        {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

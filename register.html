@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up – CheckIt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="landing">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="alert {{ category }}"
+            style="position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;min-width:280px;text-align:center">
+            {{ message }}</div>
+        {% endfor %}
+        {% endwith %}
+        <div class="landing-card">
+            <div class="logo" style="justify-content:center;margin-bottom:20px">
+                <div class="logo-icon">✅</div> CheckIt
+            </div>
+            <h2 class="form-title" style="text-align:center">Create Account 🎉</h2>
+            <p class="form-sub" style="text-align:center;margin-bottom:24px">Join CheckIt and start organising</p>
+            <form method="POST">
+                <div class="field">
+                    <label>🙂 Full Name</label>
+                    <input type="text" name="name" placeholder="e.g. Lubelihle Munkombwe" required>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>📧 Email</label>
+                        <input type="email" name="email" placeholder="you@uni.ac" required>
+                    </div>
+                    <div class="field">
+                        <label>📚 Course</label>
+                        <input type="text" name="course" placeholder="e.g. Computer Science">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>🔒 Password</label>
+                    <input type="password" name="password" placeholder="Min 6 characters" required>
+                </div>
+                <div class="btn-row" style="flex-direction:column">
+                    <button type="submit" class="btn btn-accent" style="width:100%;justify-content:center">Create
+                        Account 🎉</button>
+                    <a href="{{ url_for('login') }}" class="btn btn-ghost"
+                        style="width:100%;justify-content:center">Already have one? Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

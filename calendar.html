@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Calendar – CheckIt{% endblock %}
+{% block content %}
+<div class="page">
+    <div class="section-hdr">
+        <div class="section-title">📅 Calendar</div>
+        <a href="{{ url_for('add_task') }}" class="btn btn-accent">＋ New Task</a>
+    </div>
+    <div class="cal-wrap">
+        <div class="cal-header">
+            <div class="cal-title" id="cal-title">Loading…</div>
+            <div class="cal-month-nav">
+                <button class="btn btn-ghost btn-sm" id="cal-prev">‹ Prev</button>
+                <button class="btn btn-ghost btn-sm" id="cal-today">Today</button>
+                <button class="btn btn-ghost btn-sm" id="cal-next">Next ›</button>
+            </div>
+        </div>
+        <div class="cal-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span>
+            <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+    </div>
+</div>
+<script>
+    const CAL_DATA = {{ cal_data | tojson }};
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+
+    function renderCalendar() {
+        const today = new Date();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInM = new Date(year, month + 1, 0).getDate();
+        const prevDays = new Date(year, month, 0).getDate();
+        const offset = (firstDay + 6) % 7;
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        document.getElementById('cal-title').textContent = months[month] + ' ' + year;
+        let html = '';
+        for (let i = 0; i < offset; i++) {
+            html += `<div class="cal-cell other-month"><div class="cal-day-num">${prevDays - offset + i + 1}</div></div>`;
+        }
+        for (let d = 1; d <= daysInM; d++) {
+            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+            const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const dayTasks = CAL_DATA[key] || [];
+            let pills = dayTasks.slice(0, 3).map(t => {
+                const pc = t.status === 'Done' ? 'done' : t.priority.toLowerCase();
+                return `<span class="cal-pill ${pc}">${t.title}</span>`;
+            }).join('');
+            if (dayTasks.length > 3) pills += `<span class="cal-more">+${dayTasks.length - 3} more</span>`;
+            html += `<div class="cal-cell${isToday ? ' today' : ''}"><div class="cal-day-num">${d}</div>${pills}</div>`;
+        }
+        const remaining = (7 - ((offset + daysInM) % 7)) % 7;
+        for (let i = 1; i <= remaining; i++) {
+            html += `<div class="cal-cell other-month"><div class="cal-day-num">${i}</div></div>`;
+        }
+        document.getElementById('cal-grid').innerHTML = html;
+    }
+
+    document.getElementById('cal-prev').addEventListener('click', () => { month--; if (month < 0) { month = 11; year--; } renderCalendar(); });
+    document.getElementById('cal-next').addEventListener('click', () => { month++; if (month > 11) { month = 0; year++; } renderCalendar(); });
+    document.getElementById('cal-today').addEventListener('click', () => { year = new Date().getFullYear(); month = new Date().getMonth(); renderCalendar(); });
+    renderCalendar();
+</script>
+{% endblock %}
